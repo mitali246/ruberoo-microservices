@@ -1,0 +1,49 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: api-gateway
+  namespace: ruberoo
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: api-gateway
+  template:
+    metadata:
+      labels:
+        app: api-gateway
+    spec:
+      containers:
+        - name: api-gateway
+          image: ruberoo-microservices-api-gateway:latest
+          imagePullPolicy: IfNotPresent
+          ports:
+            - containerPort: 8085
+          env:
+            - name: JAVA_TOOL_OPTIONS
+              value: -Deureka.client.serviceUrl.defaultZone=http://eureka-server.ruberoo.svc.cluster.local:8761/eureka/
+          readinessProbe:
+            tcpSocket:
+              port: 8085
+            initialDelaySeconds: 10
+            periodSeconds: 5
+          livenessProbe:
+            tcpSocket:
+              port: 8085
+            initialDelaySeconds: 20
+            periodSeconds: 10
+
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: api-gateway
+  namespace: ruberoo
+spec:
+  selector:
+    app: api-gateway
+  ports:
+    - port: 8085
+      targetPort: 8085
+  type: NodePort
+

@@ -1,0 +1,58 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: ride-management-service
+  namespace: ruberoo
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: ride-management-service
+  template:
+    metadata:
+      labels:
+        app: ride-management-service
+    spec:
+      containers:
+        - name: ride-management-service
+          image: ruberoo-microservices-ride-management-service:latest
+          imagePullPolicy: IfNotPresent
+          ports:
+            - containerPort: 8083
+          env:
+            - name: SPRING_DATASOURCE_URL
+              value: jdbc:mysql://mysql.ruberoo.svc.cluster.local:3306/ruberoo_ride_db
+            - name: SPRING_DATASOURCE_USERNAME
+              value: root
+            - name: SPRING_DATASOURCE_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: mysql-secret
+                  key: MYSQL_ROOT_PASSWORD
+            - name: JAVA_TOOL_OPTIONS
+              value: -Deureka.client.serviceUrl.defaultZone=http://eureka-server.ruberoo.svc.cluster.local:8761/eureka/
+          readinessProbe:
+            tcpSocket:
+              port: 8083
+            initialDelaySeconds: 10
+            periodSeconds: 5
+          livenessProbe:
+            tcpSocket:
+              port: 8083
+            initialDelaySeconds: 20
+            periodSeconds: 10
+
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: ride-management-service
+  namespace: ruberoo
+spec:
+  selector:
+    app: ride-management-service
+  ports:
+    - port: 8083
+      targetPort: 8083
+  type: ClusterIP
+
