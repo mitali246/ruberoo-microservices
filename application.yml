@@ -1,0 +1,6 @@
+# Root application.yml (non-Kubernetes) - contains shared config served by Spring Cloud Config
+# Add JWT config so services (user-service) can fetch a strong HS512 secret.
+jwt:
+  algorithm: HS512
+  secret-key: "VM14Gy7IZ6x5S/82gZ2CXBtY7+6YjU210Q62RaNvYhF4ociVnWNzhSvv/loEpd5YYEUgzBHsmVVmgFdMokAn7w=="
+
