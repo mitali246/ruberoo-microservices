@@ -1,9 +1,12 @@
-# Use a lightweight OpenJDK 24 JRE base image
+# Dockerfile for the Ruberoo Tracking Service
+
+# Use an official OpenJDK runtime as a parent image
 FROM eclipse-temurin:24-jre-alpine
 
-# The JAR_FILE argument is passed in via docker-compose.yml
-ARG JAR_FILE="target/ruberoo-tracking-service-0.0.1-SNAPSHOT.jar"
+# Set the argument for the JAR file
+ARG JAR_FILE="target/tracking-service-1.0.0-SNAPSHOT.jar"
 
+# Copy the JAR file into the container
 COPY ${JAR_FILE} app.jar
 
 # Expose the internal port (8084) as defined in tracking-service.yml

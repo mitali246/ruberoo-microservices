@@ -1,10 +1,12 @@
-# Use a lightweight OpenJDK 24 JRE base image, suitable for M4 chip and Java 24
+# Dockerfile for the Ruberoo Eureka Server
+
+# Use an official OpenJDK runtime as a parent image
 FROM eclipse-temurin:24-jre-alpine
 
-# The JAR_FILE argument is passed in via docker-compose.yml
-ARG JAR_FILE="target/ruberoo-eureka-server-0.0.1-SNAPSHOT.jar"
+# Set the argument for the JAR file
+ARG JAR_FILE="target/eureka-server-1.0.0-SNAPSHOT.jar"
 
-# Copy the built JAR file into the container as 'app.jar'
+# Copy the JAR file into the container
 COPY ${JAR_FILE} app.jar
 
 # Eureka's default port is 8761

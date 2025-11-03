@@ -27,14 +27,25 @@ services:
       start_period: 10s
 
   # ----------------------------------------------------------------
-  # 1. Eureka Discovery Server (Port 8761)
+  # 1. Redis Service (Used for Spring Cloud Gateway Rate Limiting) - NEW
+  # ----------------------------------------------------------------
+  redis-cache:
+    image: redis:6-alpine
+    container_name: ruberoo-redis
+    ports:
+      - "6379:6379" # Default Redis port
+    networks:
+      - ruberoo-network
+
+  # ----------------------------------------------------------------
+  # 2. Eureka Discovery Server (Port 8761)
   # ----------------------------------------------------------------
   eureka-server:
     build:
       context: ./ruberoo-eureka-server
       dockerfile: Dockerfile
       args:
-        JAR_FILE: "target/eureka-server-0.0.1-SNAPSHOT.jar"
+        JAR_FILE: "target/eureka-server-1.0.0-SNAPSHOT.jar"
     container_name: eureka-server
     ports:
       - "8761:8761"
@@ -47,113 +58,132 @@ services:
       EUREKA_CLIENT_SERVICEURL_DEFAULTZONE: http://eureka-server:8761/eureka/
 
   # ----------------------------------------------------------------
-  # 2. API Gateway (Internal 8085, External 9085)
+  # 3. Config Server (Port 8888)
+  # ----------------------------------------------------------------
+  config-server:
+    build:
+      context: ./ruberoo-config-server
+      dockerfile: Dockerfile
+      args:
+        JAR_FILE: "target/ruberoo-config-server-1.0.0-SNAPSHOT.jar"
+    container_name: ruberoo-config-server
+    ports:
+      - "8888:8888"
+    networks:
+      - ruberoo-network
+    depends_on:
+      eureka-server:
+        condition: service_started
+    environment:
+      EUREKA_CLIENT_SERVICEURL_DEFAULTZONE: http://eureka-server:8761/eureka/
+      EUREKA_CLIENT_SERVICE_URL_DEFAULT_ZONE: http://eureka-server:8761/eureka/
+      JAVA_TOOL_OPTIONS: -Deureka.client.serviceUrl.defaultZone=http://eureka-server:8761/eureka/
+
+  # ----------------------------------------------------------------
+  # 4. API Gateway (Internal 8085, External 9085) - Now depends on Redis
   # ----------------------------------------------------------------
   api-gateway:
     build:
       context: ./ruberoo-api-gateway
       dockerfile: Dockerfile
       args:
-        JAR_FILE: "target/api-gateway-0.0.1-SNAPSHOT.jar"
+        JAR_FILE: "target/api-gateway-1.0.0-SNAPSHOT.jar"
     container_name: ruberoo-gateway
     ports:
       - "9085:8085"
     networks:
       - ruberoo-network
     depends_on:
-      eureka-server:
-        condition: service_started
-      mysql-db:
-        condition: service_healthy
+      - eureka-server
+      - config-server
     environment:
-      EUREKA_CLIENT_SERVICEURL_DEFAULTZONE: http://eureka-server:8761/eureka/
-      EUREKA_CLIENT_SERVICE_URL_DEFAULT_ZONE: http://eureka-server:8761/eureka/
-      JAVA_TOOL_OPTIONS: -Deureka.client.serviceUrl.defaultZone=http://eureka-server:8761/eureka/
+      - EUREKA_CLIENT_SERVICEURL_DEFAULTZONE=http://eureka-server:8761/eureka/
+      - SPRING_PROFILES_ACTIVE=docker
 
   # ----------------------------------------------------------------
-  # 3. User Service (Internal 8081, External 9081) - DB: ruberoo_user_db
+  # 5. User Service
   # ----------------------------------------------------------------
   user-service:
     build:
       context: ./ruberoo-user-service
       dockerfile: Dockerfile
       args:
-        JAR_FILE: "target/user-service-0.0.1-SNAPSHOT.jar"
-    container_name: ruberoo-user
+        JAR_FILE: "target/user-service-1.0.0-SNAPSHOT.jar"
+    container_name: ruberoo-user-service
     ports:
-      - "9081:8081"
+      - "8081:8081"
     networks:
       - ruberoo-network
     depends_on:
-      eureka-server:
-        condition: service_started
-      mysql-db:
-        condition: service_healthy
+      - eureka-server
+      - config-server
+      - mysql-db
     environment:
-      EUREKA_CLIENT_SERVICEURL_DEFAULTZONE: http://eureka-server:8761/eureka/
-      EUREKA_CLIENT_SERVICE_URL_DEFAULT_ZONE: http://eureka-server:8761/eureka/
-      JAVA_TOOL_OPTIONS: -Deureka.client.serviceUrl.defaultZone=http://eureka-server:8761/eureka/
-      SPRING_DATASOURCE_URL: jdbc:mysql://mysql-db:3306/ruberoo_user_db
-      SPRING_DATASOURCE_USERNAME: root
-      SPRING_DATASOURCE_PASSWORD: rootmitali
+      - EUREKA_CLIENT_SERVICEURL_DEFAULTZONE=http://eureka-server:8761/eureka/
+      - SPRING_PROFILES_ACTIVE=docker
 
   # ----------------------------------------------------------------
-  # 4. Ride Management Service (Internal 8083, External 9083) - DB: ruberoo_ride_db
+  # 6. Ride Management Service
   # ----------------------------------------------------------------
   ride-management-service:
     build:
       context: ./ruberoo-ride-management-service
       dockerfile: Dockerfile
       args:
-        JAR_FILE: "target/ride-management-service-0.0.1-SNAPSHOT.jar"
-    container_name: ruberoo-ride
+        JAR_FILE: "target/ride-management-service-1.0.0-SNAPSHOT.jar"
+    container_name: ruberoo-ride-management-service
     ports:
-      - "9083:8083"
+      - "8082:8082"
     networks:
       - ruberoo-network
     depends_on:
-      eureka-server:
-        condition: service_started
-      mysql-db:
-        condition: service_healthy
+      - eureka-server
+      - config-server
+      - mysql-db
     environment:
-      EUREKA_CLIENT_SERVICEURL_DEFAULTZONE: http://eureka-server:8761/eureka/
-      EUREKA_CLIENT_SERVICE_URL_DEFAULT_ZONE: http://eureka-server:8761/eureka/
-      JAVA_TOOL_OPTIONS: -Deureka.client.serviceUrl.defaultZone=http://eureka-server:8761/eureka/
-      SPRING_DATASOURCE_URL: jdbc:mysql://mysql-db:3306/ruberoo_ride_db
-      SPRING_DATASOURCE_USERNAME: root
-      SPRING_DATASOURCE_PASSWORD: rootmitali
+      - EUREKA_CLIENT_SERVICEURL_DEFAULTZONE=http://eureka-server:8761/eureka/
+      - SPRING_PROFILES_ACTIVE=docker
 
   # ----------------------------------------------------------------
-  # 5. Tracking Service (Internal 8084, External 9084) - DB: ruberoo_tracking_db
+  # 7. Tracking Service
   # ----------------------------------------------------------------
   tracking-service:
     build:
       context: ./ruberoo-tracking-service
       dockerfile: Dockerfile
       args:
-        JAR_FILE: "target/tracking-service-0.0.1-SNAPSHOT.jar"
-    container_name: ruberoo-tracking
+        JAR_FILE: "target/tracking-service-1.0.0-SNAPSHOT.jar"
+    container_name: ruberoo-tracking-service
     ports:
-      - "9084:8084"
+      - "8083:8083"
     networks:
       - ruberoo-network
     depends_on:
-      eureka-server:
-        condition: service_started
-      mysql-db:
-        condition: service_healthy
+      - eureka-server
+      - config-server
+      - mysql-db
     environment:
-      EUREKA_CLIENT_SERVICEURL_DEFAULTZONE: http://eureka-server:8761/eureka/
-      EUREKA_CLIENT_SERVICE_URL_DEFAULT_ZONE: http://eureka-server:8761/eureka/
-      JAVA_TOOL_OPTIONS: -Deureka.client.serviceUrl.defaultZone=http://eureka-server:8761/eureka/
-      SPRING_DATASOURCE_URL: jdbc:mysql://mysql-db:3306/ruberoo_tracking_db
-      SPRING_DATASOURCE_USERNAME: root
-      SPRING_DATASOURCE_PASSWORD: rootmitali
+      - EUREKA_CLIENT_SERVICEURL_DEFAULTZONE=http://eureka-server:8761/eureka/
+      - SPRING_PROFILES_ACTIVE=docker
 
-# ----------------------------------------------------------------
-# Volumes & Networks
-# ----------------------------------------------------------------
+  # ----------------------------------------------------------------
+  # 8. Frontend (Vite build served by nginx)
+  # ----------------------------------------------------------------
+  frontend:
+    build:
+      context: ./ruberoo-frontend
+      dockerfile: Dockerfile
+    container_name: ruberoo-frontend
+    environment:
+      - VITE_API_BASE_URL=http://ruberoo-gateway:8085
+    ports:
+      - "3000:80"
+    networks:
+      - ruberoo-network
+    depends_on:
+      - api-gateway
+
+
 volumes:
   mysql-data:
 

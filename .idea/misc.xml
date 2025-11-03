@@ -9,6 +9,8 @@
         <option value="$PROJECT_DIR$/ruberoo-eureka-server/pom.xml" />
         <option value="$PROJECT_DIR$/ruberoo-tracking-service/pom.xml" />
         <option value="$PROJECT_DIR$/ruberoo-ride-management-service/pom.xml" />
+        <option value="$PROJECT_DIR$/ruberoo-config-server/pom.xml" />
+        <option value="$PROJECT_DIR$/pom.xml" />
       </list>
     </option>
   </component>
