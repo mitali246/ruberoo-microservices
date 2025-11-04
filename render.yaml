@@ -1,0 +1,95 @@
+services:
+  # Eureka Server - Service Discovery
+  - type: web
+    name: ruberoo-eureka-server
+    runtime: docker
+    dockerfilePath: ./ruberoo-eureka-server/Dockerfile
+    dockerContext: .
+    plan: free
+    region: oregon
+    envVars:
+      - key: SPRING_PROFILES_ACTIVE
+        value: prod
+
+  # Config Server - Centralized Configuration
+  - type: web
+    name: ruberoo-config-server
+    runtime: docker
+    dockerfilePath: ./ruberoo-config-server/Dockerfile
+    dockerContext: .
+    plan: free
+    region: oregon
+    envVars:
+      - key: SPRING_PROFILES_ACTIVE
+        value: prod
+      - key: SPRING_CLOUD_CONFIG_SERVER_GIT_URI
+        value: https://github.com/mitali246/ruberoo-microservices.git
+      - key: SPRING_CLOUD_CONFIG_SERVER_GIT_DEFAULT_LABEL
+        value: main
+      - key: SPRING_CLOUD_CONFIG_SERVER_GIT_SEARCH_PATHS
+        value: config-repo
+
+  # API Gateway - Public Entry Point
+  - type: web
+    name: ruberoo-api-gateway
+    runtime: docker
+    dockerfilePath: ./ruberoo-api-gateway/Dockerfile
+    dockerContext: .
+    plan: free
+    region: oregon
+    envVars:
+      - key: SPRING_PROFILES_ACTIVE
+        value: prod
+      - key: REDIS_PORT
+        value: "6379"
+
+  # User Service - Authentication
+  - type: web
+    name: ruberoo-user-service
+    runtime: docker
+    dockerfilePath: ./ruberoo-user-service/Dockerfile
+    dockerContext: .
+    plan: free
+    region: oregon
+    envVars:
+      - key: SPRING_PROFILES_ACTIVE
+        value: prod
+      - key: SPRING_DATASOURCE_USERNAME
+        value: postgres
+
+  # Ride Management Service
+  - type: web
+    name: ruberoo-ride-management-service
+    runtime: docker
+    dockerfilePath: ./ruberoo-ride-management-service/Dockerfile
+    dockerContext: .
+    plan: free
+    region: oregon
+    envVars:
+      - key: SPRING_PROFILES_ACTIVE
+        value: prod
+      - key: SPRING_DATASOURCE_USERNAME
+        value: postgres
+
+  # Tracking Service
+  - type: web
+    name: ruberoo-tracking-service
+    runtime: docker
+    dockerfilePath: ./ruberoo-tracking-service/Dockerfile
+    dockerContext: .
+    plan: free
+    region: oregon
+    envVars:
+      - key: SPRING_PROFILES_ACTIVE
+        value: prod
+      - key: SPRING_DATASOURCE_USERNAME
+        value: postgres
+
+  # Frontend - React UI
+  - type: web
+    name: ruberoo-frontend
+    runtime: static
+    buildCommand: cd ruberoo-frontend && npm install && npm run build
+    staticPublishPath: ruberoo-frontend/dist
+    plan: free
+    region: oregon
