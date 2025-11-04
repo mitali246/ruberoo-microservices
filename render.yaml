@@ -92,4 +92,3 @@ services:
     buildCommand: cd ruberoo-frontend && npm install && npm run build
     staticPublishPath: ruberoo-frontend/dist
     plan: free
-    region: oregon
