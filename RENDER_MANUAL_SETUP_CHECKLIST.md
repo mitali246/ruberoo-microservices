@@ -123,7 +123,8 @@ CREATE INDEX idx_emergency_user_id ON emergency_contacts(user_id);
 | **Name** | `ruberoo-eureka-server` |
 | **Repository** | `https://github.com/mitali246/ruberoo-microservices` |
 | **Branch** | `main` |
-| **Root Directory** | `ruberoo-eureka-server` |
+| **Root Directory** | `.` ⚠️ **IMPORTANT: Use dot (repository root)** |
+| **Dockerfile Path** | `ruberoo-eureka-server/Dockerfile` |
 | **Environment** | `Docker` |
 | **Instance Type** | `Free` |
 | **Internal Port** | `8761` |
@@ -153,7 +154,8 @@ Open URL in browser - you should see Eureka Dashboard with 0 instances initially
 | **Name** | `ruberoo-config-server` |
 | **Repository** | `https://github.com/mitali246/ruberoo-microservices` |
 | **Branch** | `main` |
-| **Root Directory** | `ruberoo-config-server` |
+| **Root Directory** | `.` ⚠️ **IMPORTANT: Use dot (repository root)** |
+| **Dockerfile Path** | `ruberoo-config-server/Dockerfile` |
 | **Environment** | `Docker` |
 | **Instance Type** | `Free` |
 | **Internal Port** | `8888` |
@@ -190,7 +192,8 @@ curl https://ruberoo-config-server.onrender.com/actuator/health
 | **Name** | `ruberoo-api-gateway` |
 | **Repository** | `https://github.com/mitali246/ruberoo-microservices` |
 | **Branch** | `main` |
-| **Root Directory** | `ruberoo-api-gateway` |
+| **Root Directory** | `.` ⚠️ **IMPORTANT: Use dot (repository root)** |
+| **Dockerfile Path** | `ruberoo-api-gateway/Dockerfile` |
 | **Environment** | `Docker` |
 | **Instance Type** | `Free` |
 | **Internal Port** | `8085` |
@@ -229,7 +232,8 @@ curl https://ruberoo-api-gateway.onrender.com/actuator/health
 | **Name** | `ruberoo-user-service` |
 | **Repository** | `https://github.com/mitali246/ruberoo-microservices` |
 | **Branch** | `main` |
-| **Root Directory** | `ruberoo-user-service` |
+| **Root Directory** | `.` ⚠️ **IMPORTANT: Use dot (repository root)** |
+| **Dockerfile Path** | `ruberoo-user-service/Dockerfile` |
 | **Environment** | `Docker` |
 | **Instance Type** | `Free` |
 | **Internal Port** | `8081` |
@@ -265,7 +269,8 @@ Check Eureka Dashboard - should show `USER-SERVICE` registered.
 | **Name** | `ruberoo-ride-management-service` |
 | **Repository** | `https://github.com/mitali246/ruberoo-microservices` |
 | **Branch** | `main` |
-| **Root Directory** | `ruberoo-ride-management-service` |
+| **Root Directory** | `.` ⚠️ **IMPORTANT: Use dot (repository root)** |
+| **Dockerfile Path** | `ruberoo-ride-management-service/Dockerfile` |
 | **Environment** | `Docker` |
 | **Instance Type** | `Free` |
 | **Internal Port** | `8083` |
@@ -297,7 +302,8 @@ SPRING_DATASOURCE_PASSWORD=[your-supabase-password]
 | **Name** | `ruberoo-tracking-service` |
 | **Repository** | `https://github.com/mitali246/ruberoo-microservices` |
 | **Branch** | `main` |
-| **Root Directory** | `ruberoo-tracking-service` |
+| **Root Directory** | `.` ⚠️ **IMPORTANT: Use dot (repository root)** |
+| **Dockerfile Path** | `ruberoo-tracking-service/Dockerfile` |
 | **Environment** | `Docker` |
 | **Instance Type** | `Free` |
 | **Internal Port** | `8084` |
