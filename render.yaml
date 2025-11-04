@@ -86,9 +86,7 @@ services:
         value: postgres
 
   # Frontend - React UI
-  - type: web
+  - type: static_site
     name: ruberoo-frontend
-    runtime: static
     buildCommand: cd ruberoo-frontend && npm install && npm run build
     staticPublishPath: ruberoo-frontend/dist
-    plan: free
