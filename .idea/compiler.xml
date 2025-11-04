@@ -7,22 +7,24 @@
         <sourceTestOutputDir name="target/generated-test-sources/test-annotations" />
         <outputRelativeToContentRoot value="true" />
         <module name="ruberoo-config-server" />
+        <module name="config-client" />
+        <module name="config-server-demo" />
         <module name="api-gateway" />
+        <module name="config-client-demo" />
         <module name="user-service" />
         <module name="ride-management-service" />
         <module name="eureka-server" />
         <module name="tracking-service" />
+        <module name="security-demo" />
       </profile>
     </annotationProcessing>
-    <bytecodeTargetLevel>
-      <module name="config-client" target="17" />
-      <module name="security-demo" target="17" />
-    </bytecodeTargetLevel>
   </component>
   <component name="JavacSettings">
     <option name="ADDITIONAL_OPTIONS_OVERRIDE">
       <module name="api-gateway" options="-parameters" />
       <module name="config-client" options="-parameters" />
+      <module name="config-client-demo" options="-parameters" />
+      <module name="config-server-demo" options="-parameters" />
       <module name="eureka-server" options="-parameters" />
       <module name="ride-management-service" options="-parameters" />
       <module name="ruberoo-config-server" options="-parameters" />
