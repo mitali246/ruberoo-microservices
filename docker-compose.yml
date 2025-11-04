@@ -68,7 +68,7 @@ services:
         JAR_FILE: "target/ruberoo-config-server-1.0.0-SNAPSHOT.jar"
     container_name: ruberoo-config-server
     ports:
-      - "8888:8888"
+      - "8889:8888"
     networks:
       - ruberoo-network
     depends_on:
@@ -90,15 +90,23 @@ services:
         JAR_FILE: "target/api-gateway-1.0.0-SNAPSHOT.jar"
     container_name: ruberoo-gateway
     ports:
-      - "9085:8085"
+      - "9095:8085"
     networks:
       - ruberoo-network
     depends_on:
       - eureka-server
       - config-server
+      - redis-cache
     environment:
       - EUREKA_CLIENT_SERVICEURL_DEFAULTZONE=http://eureka-server:8761/eureka/
+      - EUREKA_CLIENT_SERVICE_URL_DEFAULT_ZONE=http://eureka-server:8761/eureka/
       - SPRING_PROFILES_ACTIVE=docker
+      - SPRING_CONFIG_IMPORT=optional:configserver:http://config-server:8888
+      - SPRING_CLOUD_CONFIG_RETRY_ENABLED=false
+      - JAVA_TOOL_OPTIONS=-Deureka.client.service-url.defaultZone=http://eureka-server:8761/eureka/
+      - RUBEROO_JWT_SECRET_KEY=bXlTdXBlclNlY3JldEp3dFNlY3JldEtleVRoYXRJc0F0TGVhc3QyNTZCaXRzTG9uZw==
+      - SPRING_DATA_REDIS_HOST=redis-cache
+      - SPRING_DATA_REDIS_PORT=6379
 
   # ----------------------------------------------------------------
   # 5. User Service
@@ -111,7 +119,7 @@ services:
         JAR_FILE: "target/user-service-1.0.0-SNAPSHOT.jar"
     container_name: ruberoo-user-service
     ports:
-      - "8081:8081"
+      - "9081:8081"
     networks:
       - ruberoo-network
     depends_on:
@@ -121,6 +129,11 @@ services:
     environment:
       - EUREKA_CLIENT_SERVICEURL_DEFAULTZONE=http://eureka-server:8761/eureka/
       - SPRING_PROFILES_ACTIVE=docker
+      - SPRING_CONFIG_IMPORT=optional:configserver:http://config-server:8888
+      - SPRING_CLOUD_CONFIG_RETRY_ENABLED=true
+      - SPRING_CLOUD_CONFIG_RETRY_INITIAL_INTERVAL=1000
+      - SPRING_CLOUD_CONFIG_RETRY_MAX_INTERVAL=5000
+      - RUBEROO_JWT_SECRET_KEY=bXlTdXBlclNlY3JldEp3dFNlY3JldEtleVRoYXRJc0F0TGVhc3QyNTZCaXRzTG9uZw==
 
   # ----------------------------------------------------------------
   # 6. Ride Management Service
@@ -133,7 +146,7 @@ services:
         JAR_FILE: "target/ride-management-service-1.0.0-SNAPSHOT.jar"
     container_name: ruberoo-ride-management-service
     ports:
-      - "8082:8082"
+      - "9082:8083"
     networks:
       - ruberoo-network
     depends_on:
@@ -143,6 +156,10 @@ services:
     environment:
       - EUREKA_CLIENT_SERVICEURL_DEFAULTZONE=http://eureka-server:8761/eureka/
       - SPRING_PROFILES_ACTIVE=docker
+      - SPRING_CONFIG_IMPORT=optional:configserver:http://config-server:8888
+      - SPRING_CLOUD_CONFIG_RETRY_ENABLED=true
+      - SPRING_CLOUD_CONFIG_RETRY_INITIAL_INTERVAL=1000
+      - SPRING_CLOUD_CONFIG_RETRY_MAX_INTERVAL=5000
 
   # ----------------------------------------------------------------
   # 7. Tracking Service
@@ -155,7 +172,7 @@ services:
         JAR_FILE: "target/tracking-service-1.0.0-SNAPSHOT.jar"
     container_name: ruberoo-tracking-service
     ports:
-      - "8083:8083"
+      - "8084:8084"
     networks:
       - ruberoo-network
     depends_on:
@@ -165,6 +182,10 @@ services:
     environment:
       - EUREKA_CLIENT_SERVICEURL_DEFAULTZONE=http://eureka-server:8761/eureka/
       - SPRING_PROFILES_ACTIVE=docker
+      - SPRING_CONFIG_IMPORT=optional:configserver:http://config-server:8888
+      - SPRING_CLOUD_CONFIG_RETRY_ENABLED=true
+      - SPRING_CLOUD_CONFIG_RETRY_INITIAL_INTERVAL=1000
+      - SPRING_CLOUD_CONFIG_RETRY_MAX_INTERVAL=5000
 
   # ----------------------------------------------------------------
   # 8. Frontend (Vite build served by nginx)
