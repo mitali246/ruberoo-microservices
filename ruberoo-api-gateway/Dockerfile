@@ -1,12 +1,34 @@
 # Dockerfile for the Ruberoo API Gateway
+# Multi-stage build: Build the JAR inside Docker
 
-# Use a lightweight OpenJDK 21 JRE base image
+# Stage 1: Build the application
+FROM eclipse-temurin:21-jdk-alpine AS builder
+
+# Set working directory
+WORKDIR /app
+
+# Copy Maven wrapper and pom.xml
+COPY mvnw .
+COPY .mvn .mvn
+COPY pom.xml .
+
+# Download dependencies (cached layer)
+RUN ./mvnw dependency:go-offline -B
+
+# Copy source code
+COPY src ./src
+
+# Build the application
+RUN ./mvnw clean package -DskipTests
+
+# Stage 2: Create the runtime image
 FROM eclipse-temurin:21-jre-alpine
 
-# The JAR_FILE argument is passed in via docker-compose.yml
-ARG JAR_FILE="target/api-gateway-1.0.0-SNAPSHOT.jar"
+# Set working directory
+WORKDIR /app
 
-COPY ${JAR_FILE} app.jar
+# Copy the JAR from builder stage
+COPY --from=builder /app/target/api-gateway-1.0.0-SNAPSHOT.jar app.jar
 
 # Expose the internal port (8085) as defined in api-gateway.yml
 EXPOSE 8085
