@@ -8,10 +8,7 @@ spring:
     config:
       server:
         git:
-          # IMPORTANT: Replace <YOUR_GITHUB_CONFIG_REPO_URL> with the actual HTTPS URL
-          # to your existing 'ruberoo-config' GitHub repository.
           uri: https://github.com/mitali246/ruberoo-microservices.git
-          # If you don't use 'main', specify your branch name here:
           default-label: main
 
 eureka:

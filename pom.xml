@@ -33,6 +33,8 @@
         <module>ruberoo-ride-management-service</module>
         <module>ruberoo-tracking-service</module>
         <module>ruberoo-user-service</module>
+        <module>config-client</module>
+        <module>security-demo</module>
     </modules>
 
     <dependencyManagement>

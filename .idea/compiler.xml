@@ -11,17 +11,22 @@
         <module name="user-service" />
         <module name="ride-management-service" />
         <module name="eureka-server" />
-        <module name="ruberoo-microservices" />
         <module name="tracking-service" />
       </profile>
     </annotationProcessing>
+    <bytecodeTargetLevel>
+      <module name="config-client" target="17" />
+      <module name="security-demo" target="17" />
+    </bytecodeTargetLevel>
   </component>
   <component name="JavacSettings">
     <option name="ADDITIONAL_OPTIONS_OVERRIDE">
       <module name="api-gateway" options="-parameters" />
+      <module name="config-client" options="-parameters" />
       <module name="eureka-server" options="-parameters" />
       <module name="ride-management-service" options="-parameters" />
       <module name="ruberoo-config-server" options="-parameters" />
+      <module name="security-demo" options="-parameters" />
       <module name="tracking-service" options="-parameters" />
       <module name="user-service" options="-parameters" />
     </option>
