@@ -1,7 +1,7 @@
 # Dockerfile for the Ruberoo Ride Management Service
 
 # Use an official OpenJDK runtime as a parent image
-FROM eclipse-temurin:24-jre-alpine
+FROM eclipse-temurin:21-jre-alpine
 
 # Set the argument for the JAR file
 ARG JAR_FILE="target/ride-management-service-1.0.0-SNAPSHOT.jar"

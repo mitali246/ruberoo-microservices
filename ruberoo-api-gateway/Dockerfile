@@ -1,7 +1,7 @@
 # Dockerfile for the Ruberoo API Gateway
 
-# Use a lightweight OpenJDK 24 JRE base image
-FROM eclipse-temurin:24-jre-alpine
+# Use a lightweight OpenJDK 21 JRE base image
+FROM eclipse-temurin:21-jre-alpine
 
 # The JAR_FILE argument is passed in via docker-compose.yml
 ARG JAR_FILE="target/api-gateway-1.0.0-SNAPSHOT.jar"

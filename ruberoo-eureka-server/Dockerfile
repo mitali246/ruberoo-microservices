@@ -1,7 +1,7 @@
 # Dockerfile for the Ruberoo Eureka Server
 
 # Use an official OpenJDK runtime as a parent image
-FROM eclipse-temurin:24-jre-alpine
+FROM eclipse-temurin:21-jre-alpine
 
 # Set the argument for the JAR file
 ARG JAR_FILE="target/eureka-server-1.0.0-SNAPSHOT.jar"

@@ -1,7 +1,7 @@
 # Dockerfile for the Ruberoo Config Server
 
 # Use an official OpenJDK runtime as a parent image
-FROM eclipse-temurin:24-jdk-alpine
+FROM eclipse-temurin:21-jre-alpine
 
 # Set the argument for the JAR file
 ARG JAR_FILE="target/ruberoo-config-server-1.0.0-SNAPSHOT.jar"

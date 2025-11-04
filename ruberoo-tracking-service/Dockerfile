@@ -1,7 +1,7 @@
 # Dockerfile for the Ruberoo Tracking Service
 
 # Use an official OpenJDK runtime as a parent image
-FROM eclipse-temurin:24-jre-alpine
+FROM eclipse-temurin:21-jre-alpine
 
 # Set the argument for the JAR file
 ARG JAR_FILE="target/tracking-service-1.0.0-SNAPSHOT.jar"
