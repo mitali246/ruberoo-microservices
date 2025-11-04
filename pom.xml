@@ -35,6 +35,8 @@
         <module>ruberoo-user-service</module>
         <module>config-client</module>
         <module>security-demo</module>
+        <module>config-server-demo</module>
+        <module>config-client-demo</module>
     </modules>
 
     <dependencyManagement>
