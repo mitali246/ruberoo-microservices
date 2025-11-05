@@ -2,4 +2,26 @@ config-repo/
 **/target/
 .DS_Store
 
+# Frontend (excluded from backend-only setup)
+ruberoo-frontend/
+*.log
+frontend.log
+
+# Deployment secrets
+deployment-secrets.env
+
+# AWS credentials
+.aws/
+*.pem
+*.key
+*.csv
+*credentials*
+*access-key*
+*secret-key*
+
+# Environment files
+.env
+.env.local
+.env.*.local
+
 

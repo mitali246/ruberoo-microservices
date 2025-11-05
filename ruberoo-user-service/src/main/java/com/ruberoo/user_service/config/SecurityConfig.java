@@ -16,6 +16,7 @@ public class SecurityConfig {
         http.csrf(csrf -> csrf.disable())
             .authorizeHttpRequests(auth -> auth
                 .requestMatchers("/api/users/auth/**").permitAll()
+                .requestMatchers("/actuator/**").permitAll()  // Allow public access to actuator endpoints for health checks
                 .anyRequest().authenticated()
             )
             .httpBasic(Customizer.withDefaults());
