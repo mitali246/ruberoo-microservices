@@ -15,8 +15,8 @@ spec:
     spec:
       containers:
         - name: config-server
-          image: ruberoo-microservices-config-server:latest
-          imagePullPolicy: IfNotPresent
+          image: 008041186656.dkr.ecr.us-east-1.amazonaws.com/ruberoo-config:latest
+          imagePullPolicy: Always
           ports:
             - containerPort: 8888
           readinessProbe:

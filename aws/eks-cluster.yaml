@@ -1,0 +1,68 @@
+apiVersion: eksctl.io/v1alpha5
+kind: ClusterConfig
+
+metadata:
+  name: ruberoo-cluster
+  region: us-east-1
+  version: "1.28"
+
+# IAM Configuration
+iam:
+  withOIDC: true
+  serviceRoleARN: arn:aws:iam::008041186656:role/ruberoo-eks-cluster-role
+  serviceAccounts:
+    - metadata:
+        name: aws-load-balancer-controller
+        namespace: kube-system
+      wellKnownPolicies:
+        awsLoadBalancerController: true
+
+# VPC Configuration - Using Default VPC
+vpc:
+  id: vpc-00fdde9604a8b018a
+  subnets:
+    private:
+      us-east-1a:
+        id: subnet-02cd5a1d25a3db602
+      us-east-1b:
+        id: subnet-062aaa3fc859e5557
+    public:
+      us-east-1a:
+        id: subnet-02cd5a1d25a3db602
+      us-east-1b:
+        id: subnet-062aaa3fc859e5557
+
+# Node Groups
+nodeGroups:
+  - name: ruberoo-nodes
+    instanceType: t3.medium
+    desiredCapacity: 2
+    minSize: 1
+    maxSize: 3
+    volumeSize: 20
+    volumeType: gp3
+    ssh:
+      allow: false
+    iam:
+      instanceRoleARN: arn:aws:iam::008041186656:role/ruberoo-eks-node-role
+    labels:
+      role: worker
+    tags:
+      k8s.io/cluster-autoscaler/enabled: "true"
+      k8s.io/cluster-autoscaler/ruberoo-cluster: "owned"
+
+# CloudWatch Logging
+cloudWatch:
+  clusterLogging:
+    enableTypes: ["*"]
+
+# Add-ons
+addons:
+  - name: vpc-cni
+    version: latest
+  - name: coredns
+    version: latest
+  - name: kube-proxy
+    version: latest
+  - name: aws-ebs-csi-driver
+    version: latest

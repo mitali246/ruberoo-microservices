@@ -1,0 +1,102 @@
+name: Deploy to AWS ECS
+
+on:
+  push:
+    branches:
+      - main
+  workflow_dispatch:
+
+env:
+  AWS_REGION: us-east-1
+  ECR_REGISTRY: 008041186656.dkr.ecr.us-east-1.amazonaws.com
+  ECS_CLUSTER: ruberoo-cluster
+  ECS_SERVICE: ruberoo-services
+
+jobs:
+  build-and-deploy:
+    runs-on: ubuntu-latest
+    
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+    
+    - name: Configure AWS credentials
+      uses: aws-actions/configure-aws-credentials@v4
+      with:
+        aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+        aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+        aws-region: ${{ env.AWS_REGION }}
+    
+    - name: Login to Amazon ECR
+      id: login-ecr
+      uses: aws-actions/amazon-ecr-login@v2
+    
+    - name: Build and push User Service
+      env:
+        ECR_REPOSITORY: ruberoo-user
+        SERVICE_NAME: ruberoo-user-service
+      run: |
+        docker build -t $ECR_REGISTRY/$ECR_REPOSITORY:latest -f $SERVICE_NAME/Dockerfile $SERVICE_NAME
+        docker push $ECR_REGISTRY/$ECR_REPOSITORY:latest
+    
+    - name: Build and push API Gateway
+      env:
+        ECR_REPOSITORY: ruberoo-gateway
+        SERVICE_NAME: ruberoo-api-gateway
+      run: |
+        docker build -t $ECR_REGISTRY/$ECR_REPOSITORY:latest -f $SERVICE_NAME/Dockerfile $SERVICE_NAME
+        docker push $ECR_REGISTRY/$ECR_REPOSITORY:latest
+    
+    - name: Build and push Ride Service
+      env:
+        ECR_REPOSITORY: ruberoo-ride
+        SERVICE_NAME: ruberoo-ride-management-service
+      run: |
+        docker build -t $ECR_REGISTRY/$ECR_REPOSITORY:latest -f $SERVICE_NAME/Dockerfile $SERVICE_NAME
+        docker push $ECR_REGISTRY/$ECR_REPOSITORY:latest
+    
+    - name: Build and push Tracking Service
+      env:
+        ECR_REPOSITORY: ruberoo-tracking
+        SERVICE_NAME: ruberoo-tracking-service
+      run: |
+        docker build -t $ECR_REGISTRY/$ECR_REPOSITORY:latest -f $SERVICE_NAME/Dockerfile $SERVICE_NAME
+        docker push $ECR_REGISTRY/$ECR_REPOSITORY:latest
+    
+    - name: Build and push Eureka
+      env:
+        ECR_REPOSITORY: ruberoo-eureka
+        SERVICE_NAME: ruberoo-eureka-server
+      run: |
+        docker build -t $ECR_REGISTRY/$ECR_REPOSITORY:latest -f $SERVICE_NAME/Dockerfile $SERVICE_NAME
+        docker push $ECR_REGISTRY/$ECR_REPOSITORY:latest
+    
+    - name: Build and push Config Server
+      env:
+        ECR_REPOSITORY: ruberoo-config
+        SERVICE_NAME: ruberoo-config-server
+      run: |
+        docker build -t $ECR_REGISTRY/$ECR_REPOSITORY:latest -f $SERVICE_NAME/Dockerfile $SERVICE_NAME
+        docker push $ECR_REGISTRY/$ECR_REPOSITORY:latest
+    
+    - name: Install kubectl
+      uses: azure/setup-kubectl@v3
+      with:
+        version: 'latest'
+    
+    - name: Configure kubectl for EKS
+      run: |
+        aws eks update-kubeconfig --name ruberoo-cluster --region ${{ env.AWS_REGION }}
+    
+    - name: Deploy to EKS
+      run: |
+        echo "✅ Images pushed to ECR"
+        echo "🔄 Updating deployments..."
+        kubectl set image deployment/user-service user-service=$ECR_REGISTRY/ruberoo-user:latest -n ruberoo || echo "User service not deployed yet"
+        kubectl set image deployment/api-gateway api-gateway=$ECR_REGISTRY/ruberoo-gateway:latest -n ruberoo || echo "API Gateway not deployed yet"
+        kubectl set image deployment/ride-management-service ride-management-service=$ECR_REGISTRY/ruberoo-ride:latest -n ruberoo || echo "Ride service not deployed yet"
+        kubectl set image deployment/tracking-service tracking-service=$ECR_REGISTRY/ruberoo-tracking:latest -n ruberoo || echo "Tracking service not deployed yet"
+        kubectl set image deployment/eureka-server eureka-server=$ECR_REGISTRY/ruberoo-eureka:latest -n ruberoo || echo "Eureka not deployed yet"
+        kubectl set image deployment/config-server config-server=$ECR_REGISTRY/ruberoo-config:latest -n ruberoo || echo "Config server not deployed yet"
+        echo "✅ Deployment complete!"
+

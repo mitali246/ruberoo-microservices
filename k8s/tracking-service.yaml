@@ -15,20 +15,33 @@ spec:
     spec:
       containers:
         - name: tracking-service
-          image: ruberoo-microservices-tracking-service:latest
-          imagePullPolicy: Never
+          image: 008041186656.dkr.ecr.us-east-1.amazonaws.com/ruberoo-tracking:latest
+          imagePullPolicy: Always
           ports:
             - containerPort: 8084
           env:
+            - name: RDS_HOST
+              valueFrom:
+                secretKeyRef:
+                  name: rds-secret
+                  key: RDS_HOST
+            - name: RDS_PORT
+              valueFrom:
+                secretKeyRef:
+                  name: rds-secret
+                  key: RDS_PORT
             - name: SPRING_DATASOURCE_URL
-              value: "jdbc:mysql://mysql.ruberoo.svc.cluster.local:3306/ruberoo_tracking_db"
+              value: "jdbc:mysql://ruberoo-mysql.cq382ua6uclq.us-east-1.rds.amazonaws.com:3306/ruberoo_tracking_db"
             - name: SPRING_DATASOURCE_USERNAME
-              value: "root"
+              valueFrom:
+                secretKeyRef:
+                  name: rds-secret
+                  key: RDS_USERNAME
             - name: SPRING_DATASOURCE_PASSWORD
               valueFrom:
                 secretKeyRef:
-                  name: mysql-secret
-                  key: MYSQL_ROOT_PASSWORD
+                  name: rds-secret
+                  key: RDS_PASSWORD
             - name: JAVA_TOOL_OPTIONS
               value: "-Deureka.client.serviceUrl.defaultZone=http://eureka-server.ruberoo.svc.cluster.local:8761/eureka/ -Dspring.cloud.bootstrap.enabled=false -Dspring.config.import= -Dspring.cloud.config.enabled=false"
             - name: SPRING_CLOUD_CONFIG_ENABLED

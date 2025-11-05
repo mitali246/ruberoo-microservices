@@ -1,0 +1,35 @@
+{
+  "name": "ruberoo-user-service-build",
+  "description": "CodeBuild project for User Service",
+  "source": {
+    "type": "GITHUB",
+    "location": "https://github.com/mitali246/ruberoo-microservices.git",
+    "buildspec": "aws/buildspecs/buildspec-user-service.yml"
+  },
+  "artifacts": {
+    "type": "NO_ARTIFACTS"
+  },
+  "environment": {
+    "type": "LINUX_CONTAINER",
+    "image": "aws/codebuild/standard:7.0",
+    "computeType": "BUILD_GENERAL1_SMALL",
+    "privilegedMode": true,
+    "environmentVariables": [
+      {
+        "name": "AWS_REGION",
+        "value": "us-east-1"
+      },
+      {
+        "name": "ECR_REGISTRY",
+        "value": "008041186656.dkr.ecr.us-east-1.amazonaws.com"
+      },
+      {
+        "name": "IMAGE_REPO_NAME",
+        "value": "ruberoo-user"
+      }
+    ]
+  },
+  "serviceRole": "arn:aws:iam::008041186656:role/ruberoo-codebuild-service-role",
+  "timeoutInMinutes": 60
+}
+

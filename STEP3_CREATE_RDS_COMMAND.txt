@@ -1,0 +1,25 @@
+# Step 3.4: Create RDS MySQL Instance
+# ⚠️ IMPORTANT: Replace YOUR_SECURE_PASSWORD with your actual password
+
+aws rds create-db-instance \
+  --db-instance-identifier ruberoo-mysql \
+  --db-instance-class db.t3.micro \
+  --engine mysql \
+  --engine-version 8.0.35 \
+  --master-username admin \
+  --master-user-password "YOUR_SECURE_PASSWORD" \
+  --allocated-storage 20 \
+  --storage-type gp2 \
+  --vpc-security-group-ids sg-0ad197107d8b310a0 \
+  --db-subnet-group-name ruberoo-db-subnet-group \
+  --backup-retention-period 7 \
+  --publicly-accessible \
+  --storage-encrypted \
+  --region us-east-1 \
+  --profile ruberoo-deployment
+
+# Password Requirements:
+# - 8-41 characters
+# - Mix of uppercase, lowercase, numbers, and special characters
+# - Save it securely! (You'll need it to connect)
+

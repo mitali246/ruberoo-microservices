@@ -15,8 +15,8 @@ spec:
     spec:
       containers:
         - name: api-gateway
-          image: ruberoo-microservices-api-gateway:latest
-          imagePullPolicy: IfNotPresent
+          image: 008041186656.dkr.ecr.us-east-1.amazonaws.com/ruberoo-gateway:latest
+          imagePullPolicy: Always
           ports:
             - containerPort: 8085
           env:

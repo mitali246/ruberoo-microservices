@@ -1,0 +1,45 @@
+{
+  "accountId": "008041186656",
+  "region": "us-east-1",
+  "registryId": "008041186656",
+  "baseUri": "008041186656.dkr.ecr.us-east-1.amazonaws.com",
+  "repositories": [
+    {
+      "name": "ruberoo-gateway",
+      "uri": "008041186656.dkr.ecr.us-east-1.amazonaws.com/ruberoo-gateway",
+      "arn": "arn:aws:ecr:us-east-1:008041186656:repository/ruberoo-gateway",
+      "service": "api-gateway"
+    },
+    {
+      "name": "ruberoo-user",
+      "uri": "008041186656.dkr.ecr.us-east-1.amazonaws.com/ruberoo-user",
+      "arn": "arn:aws:ecr:us-east-1:008041186656:repository/ruberoo-user",
+      "service": "user-service"
+    },
+    {
+      "name": "ruberoo-ride",
+      "uri": "008041186656.dkr.ecr.us-east-1.amazonaws.com/ruberoo-ride",
+      "arn": "arn:aws:ecr:us-east-1:008041186656:repository/ruberoo-ride",
+      "service": "ride-management-service"
+    },
+    {
+      "name": "ruberoo-tracking",
+      "uri": "008041186656.dkr.ecr.us-east-1.amazonaws.com/ruberoo-tracking",
+      "arn": "arn:aws:ecr:us-east-1:008041186656:repository/ruberoo-tracking",
+      "service": "tracking-service"
+    },
+    {
+      "name": "ruberoo-eureka",
+      "uri": "008041186656.dkr.ecr.us-east-1.amazonaws.com/ruberoo-eureka",
+      "arn": "arn:aws:ecr:us-east-1:008041186656:repository/ruberoo-eureka",
+      "service": "eureka-server"
+    },
+    {
+      "name": "ruberoo-config",
+      "uri": "008041186656.dkr.ecr.us-east-1.amazonaws.com/ruberoo-config",
+      "arn": "arn:aws:ecr:us-east-1:008041186656:repository/ruberoo-config",
+      "service": "config-server"
+    }
+  ]
+}
+

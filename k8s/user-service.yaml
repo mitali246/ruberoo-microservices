@@ -15,20 +15,33 @@ spec:
     spec:
       containers:
         - name: user-service
-          image: ruberoo-microservices-user-service:latest
-          imagePullPolicy: IfNotPresent
+          image: 008041186656.dkr.ecr.us-east-1.amazonaws.com/ruberoo-user:latest
+          imagePullPolicy: Always
           ports:
             - containerPort: 8081
           env:
+            - name: RDS_HOST
+              valueFrom:
+                secretKeyRef:
+                  name: rds-secret
+                  key: RDS_HOST
+            - name: RDS_PORT
+              valueFrom:
+                secretKeyRef:
+                  name: rds-secret
+                  key: RDS_PORT
             - name: SPRING_DATASOURCE_URL
-              value: jdbc:mysql://mysql.ruberoo.svc.cluster.local:3306/ruberoo_user_db
+              value: "jdbc:mysql://ruberoo-mysql.cq382ua6uclq.us-east-1.rds.amazonaws.com:3306/ruberoo_user_db"
             - name: SPRING_DATASOURCE_USERNAME
-              value: root
+              valueFrom:
+                secretKeyRef:
+                  name: rds-secret
+                  key: RDS_USERNAME
             - name: SPRING_DATASOURCE_PASSWORD
               valueFrom:
                 secretKeyRef:
-                  name: mysql-secret
-                  key: MYSQL_ROOT_PASSWORD
+                  name: rds-secret
+                  key: RDS_PASSWORD
             - name: JAVA_TOOL_OPTIONS
               value: -Deureka.client.serviceUrl.defaultZone=http://eureka-server.ruberoo.svc.cluster.local:8761/eureka/
             - name: SPRING_CLOUD_CONFIG_ENABLED

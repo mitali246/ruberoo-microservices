@@ -1,0 +1,43 @@
+{
+  "Version": "2012-10-17",
+  "Statement": [
+    {
+      "Effect": "Allow",
+      "Action": [
+        "s3:GetObject",
+        "s3:PutObject",
+        "s3:GetObjectVersion",
+        "s3:GetBucketVersioning"
+      ],
+      "Resource": [
+        "arn:aws:s3:::ruberoo-codepipeline-artifacts-008041186656/*",
+        "arn:aws:s3:::ruberoo-codepipeline-artifacts-008041186656"
+      ]
+    },
+    {
+      "Effect": "Allow",
+      "Action": [
+        "codebuild:BatchGetBuilds",
+        "codebuild:StartBuild"
+      ],
+      "Resource": [
+        "arn:aws:codebuild:us-east-1:008041186656:project/ruberoo-user-service-build",
+        "arn:aws:codebuild:us-east-1:008041186656:project/ruberoo-api-gateway-build",
+        "arn:aws:codebuild:us-east-1:008041186656:project/ruberoo-ride-service-build",
+        "arn:aws:codebuild:us-east-1:008041186656:project/ruberoo-tracking-service-build",
+        "arn:aws:codebuild:us-east-1:008041186656:project/ruberoo-eureka-build",
+        "arn:aws:codebuild:us-east-1:008041186656:project/ruberoo-config-server-build"
+      ]
+    },
+    {
+      "Effect": "Allow",
+      "Action": [
+        "logs:CreateLogGroup",
+        "logs:CreateLogStream",
+        "logs:PutLogEvents"
+      ],
+      "Resource": "arn:aws:logs:us-east-1:008041186656:*"
+    }
+  ]
+}
+
