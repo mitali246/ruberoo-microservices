@@ -16,32 +16,32 @@ phases:
       - REPOSITORY_URI=$ECR_REGISTRY/$IMAGE_REPO_NAME
       - COMMIT_HASH=$(echo $CODEBUILD_RESOLVED_SOURCE_VERSION | cut -c 1-7)
       - IMAGE_TAG=${COMMIT_HASH:=latest}
-      - echo Build started on `date`
-      - echo Current directory: $(pwd)
-      - echo Java version:
+      - echo "Build started on $(date)"
+      - echo "Current directory: $(pwd)"
+      - echo "Java version:"
       - java -version
-      - echo Maven version:
+      - echo "Maven version:"
       - mvn --version
-      - echo Checking project structure...
+      - echo "Checking project structure..."
       - ls -la | head -20
-      - test -f pom.xml && echo "✓ Parent pom.xml found" || (echo "✗ ERROR: Parent pom.xml not found!" && exit 1)
+      - test -f pom.xml && echo "Parent pom.xml found" || (echo "ERROR: Parent pom.xml not found!" && exit 1)
   build:
     commands:
-      - echo Building Maven project for $SERVICE_NAME...
+      - echo "Building Maven project for $SERVICE_NAME..."
       - mvn clean package -pl $SERVICE_NAME -am -DskipTests
-      - echo Maven build completed
-      - echo Checking for JAR file...
+      - echo "Maven build completed"
+      - echo "Checking for JAR file..."
       - ls -la $SERVICE_NAME/target/*.jar || (echo "ERROR: JAR file not found!" && exit 1)
-      - echo Building Docker image...
+      - echo "Building Docker image..."
       - docker build -t $REPOSITORY_URI:latest -t $REPOSITORY_URI:$IMAGE_TAG -f $SERVICE_NAME/Dockerfile $SERVICE_NAME
       - docker tag $REPOSITORY_URI:latest $REPOSITORY_URI:$IMAGE_TAG
   post_build:
     commands:
-      - echo Build completed on `date`
-      - echo Pushing the Docker images...
+      - echo "Build completed on $(date)"
+      - echo "Pushing the Docker images..."
       - docker push $REPOSITORY_URI:latest
       - docker push $REPOSITORY_URI:$IMAGE_TAG
-      - echo Writing image definitions file...
+      - echo "Writing image definitions file..."
       - printf '{"name":"user-service","imageUri":"%s"}' $REPOSITORY_URI:$IMAGE_TAG > imagedefinitions.json
       - cat imagedefinitions.json
 
