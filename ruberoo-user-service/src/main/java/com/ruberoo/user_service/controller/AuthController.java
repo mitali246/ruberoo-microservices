@@ -72,4 +72,36 @@ public class AuthController {
         // 4. Return the JWT to the client
         return ResponseEntity.ok(Collections.singletonMap("token", jwt));
     }
+
+    /**
+     * Handles user registration
+     * Endpoint: /api/users/auth/register
+     */
+    @PostMapping("/register")
+    public ResponseEntity<?> registerUser(@RequestBody User user) {
+        try {
+            // Check if user already exists
+            if (userRepository.findByEmail(user.getEmail()).isPresent()) {
+                return ResponseEntity.badRequest()
+                    .body(Collections.singletonMap("error", "Email already registered"));
+            }
+
+            // Encode password before saving
+            user.setPassword(passwordEncoder.encode(user.getPassword()));
+            
+            // Save user
+            User savedUser = userRepository.save(user);
+            
+            // Remove password from response
+            savedUser.setPassword(null);
+            
+            logger.info("User registered successfully: {}", savedUser.getEmail());
+            return ResponseEntity.ok(savedUser);
+            
+        } catch (Exception e) {
+            logger.error("Error registering user: {}", e.getMessage());
+            return ResponseEntity.internalServerError()
+                .body(Collections.singletonMap("error", "Registration failed"));
+        }
+    }
 }
