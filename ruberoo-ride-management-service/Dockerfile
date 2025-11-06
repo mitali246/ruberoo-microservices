@@ -2,7 +2,7 @@
 # Simple runtime image - expects pre-built JAR
 # Build JAR first with: mvn clean package -pl ruberoo-ride-management-service -am -DskipTests
 
-FROM public.ecr.aws/amazoncorretto/amazoncorretto:21-alpine
+FROM public.ecr.aws/docker/library/eclipse-temurin:21-jre-alpine
 
 # Set working directory
 WORKDIR /app
