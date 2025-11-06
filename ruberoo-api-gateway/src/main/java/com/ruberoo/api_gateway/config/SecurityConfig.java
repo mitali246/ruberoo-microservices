@@ -24,6 +24,9 @@ public class SecurityConfig {
                         // All other requests must be authenticated
                         .anyExchange().authenticated()
                 )
+                // Disable default form login and HTTP basic - we use JWT
+                .httpBasic(ServerHttpSecurity.HttpBasicSpec::disable)
+                .formLogin(ServerHttpSecurity.FormLoginSpec::disable)
                 .build();
     }
 }
