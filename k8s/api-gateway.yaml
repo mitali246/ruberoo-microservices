@@ -13,6 +13,8 @@ spec:
       labels:
         app: api-gateway
     spec:
+      imagePullSecrets:
+        - name: ecr-registry-secret
       containers:
         - name: api-gateway
           image: 008041186656.dkr.ecr.us-east-1.amazonaws.com/ruberoo-gateway:latest
