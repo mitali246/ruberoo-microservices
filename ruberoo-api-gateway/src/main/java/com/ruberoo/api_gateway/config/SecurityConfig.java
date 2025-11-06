@@ -19,9 +19,9 @@ public class SecurityConfig {
                         .pathMatchers("/actuator/**").permitAll() // For health checks - must be first
                         .pathMatchers("/eureka/**").permitAll()
                         .pathMatchers("/api/users/auth/**").permitAll() // Login endpoint
-                        .pathMatchers("/api/users").permitAll() // Registration endpoint (POST /api/users)
+                        .pathMatchers("/api/users/**").permitAll() // Registration endpoint (POST /api/users) and all user endpoints
                         // Also allow Discovery Locator routes for testing
-                        .pathMatchers("/user-service/api/users").permitAll()
+                        .pathMatchers("/user-service/api/users/**").permitAll()
                         .pathMatchers("/user-service/api/users/auth/**").permitAll()
 
                         // All other requests must be authenticated
