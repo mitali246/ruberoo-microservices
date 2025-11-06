@@ -20,6 +20,9 @@ public class SecurityConfig {
                         .pathMatchers("/eureka/**").permitAll()
                         .pathMatchers("/api/users/auth/**").permitAll() // Login endpoint
                         .pathMatchers("/api/users").permitAll() // Registration endpoint (POST /api/users)
+                        // Also allow Discovery Locator routes for testing
+                        .pathMatchers("/user-service/api/users").permitAll()
+                        .pathMatchers("/user-service/api/users/auth/**").permitAll()
 
                         // All other requests must be authenticated
                         .anyExchange().authenticated()
