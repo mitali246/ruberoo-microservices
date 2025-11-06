@@ -2,7 +2,7 @@
 # Simple runtime image - expects pre-built JAR
 # Build JAR first with: mvn clean package -DskipTests
 
-FROM eclipse-temurin:21-jre-alpine
+FROM public.ecr.aws/amazoncorretto/amazoncorretto:21-alpine
 
 # Set working directory
 WORKDIR /app
