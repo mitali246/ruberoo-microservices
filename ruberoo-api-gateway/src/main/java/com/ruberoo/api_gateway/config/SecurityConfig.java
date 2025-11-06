@@ -15,9 +15,9 @@ public class SecurityConfig {
         // We are disabling CSRF because we are using JWT tokens (stateless authentication)
         return http.csrf(ServerHttpSecurity.CsrfSpec::disable)
                 .authorizeExchange(exchange -> exchange
-                        // Allow access to Eureka, Config Server, and public endpoints
+                        // Allow access to Eureka, Config Server, and public endpoints (order matters!)
+                        .pathMatchers("/actuator/**").permitAll() // For health checks - must be first
                         .pathMatchers("/eureka/**").permitAll()
-                        .pathMatchers("/actuator/**").permitAll() // For health checks
                         .pathMatchers("/api/users/auth/**").permitAll() // Login endpoint
                         .pathMatchers("/api/users").permitAll() // Registration endpoint (POST /api/users)
 
