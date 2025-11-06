@@ -65,13 +65,11 @@ public class JwtValidationFilter extends AbstractGatewayFilterFactory<JwtValidat
         if (path.startsWith("/api/users/auth/")) {
             return true; // Login endpoint
         }
-        // Registration endpoint: POST /api/users or POST /api/users/**
+        // Registration endpoint: POST /api/users or any POST to /api/users/** 
+        // This allows POST /api/users, POST /api/users/register, etc.
         if (path.startsWith("/api/users") && "POST".equalsIgnoreCase(method)) {
-            // Allow POST to /api/users (registration) but require auth for GET/PUT/DELETE
-            // Only exact /api/users or /api/users/* paths are public for POST
-            if (path.equals("/api/users") || path.matches("/api/users/[^/]+")) {
-                return true; // Registration endpoint (POST /api/users or POST /api/users/{id})
-            }
+            // Only allow POST for registration - GET/PUT/DELETE require auth
+            return true; // Registration endpoint (POST /api/users/**)
         }
         if (path.startsWith("/actuator/")) {
             return true; // Health checks
