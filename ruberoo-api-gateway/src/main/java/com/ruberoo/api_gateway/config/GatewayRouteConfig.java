@@ -16,23 +16,24 @@ public class GatewayRouteConfig {
     @Bean
     public RouteLocator customRouteLocator(RouteLocatorBuilder builder) {
         return builder.routes()
-                // User Service Routes
-                .route("user-service", r -> r
+                // User Service Routes - routes /api/users/** to user-service
+                // JWT filter will skip validation for public paths (/api/users/auth/** and POST /api/users)
+                .route("user-service-route", r -> r
                         .path("/api/users/**")
                         .filters(f -> f.filter(jwtValidationFilter.apply(new JwtValidationFilter.Config())))
-                        .uri("lb://user-service"))
+                        .uri("lb://USER-SERVICE"))
                 
                 // Ride Management Service Routes
-                .route("ride-management-service", r -> r
+                .route("ride-management-service-route", r -> r
                         .path("/api/rides/**")
                         .filters(f -> f.filter(jwtValidationFilter.apply(new JwtValidationFilter.Config())))
-                        .uri("lb://ride-management-service"))
+                        .uri("lb://RIDE-MANAGEMENT-SERVICE"))
                 
                 // Tracking Service Routes
-                .route("tracking-service", r -> r
+                .route("tracking-service-route", r -> r
                         .path("/api/tracking/**")
                         .filters(f -> f.filter(jwtValidationFilter.apply(new JwtValidationFilter.Config())))
-                        .uri("lb://tracking-service"))
+                        .uri("lb://TRACKING-SERVICE"))
                 
                 .build();
     }
