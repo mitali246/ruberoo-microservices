@@ -26,14 +26,20 @@ public class JwtValidationFilter extends AbstractGatewayFilterFactory<JwtValidat
     @Override
     public Mono<Void> filter(ServerWebExchange exchange, org.springframework.cloud.gateway.filter.GatewayFilterChain chain) {
         ServerHttpRequest request = exchange.getRequest();
+        String path = request.getURI().getPath();
+
+        // Skip JWT validation for public endpoints
+        if (isPublicPath(path, request.getMethod().toString())) {
+            return chain.filter(exchange);
+        }
 
         // 1. Check for Authorization header
-        if (!request.getHeaders().containsKey("Authorization")) {
+        List<String> authHeaders = request.getHeaders().get("Authorization");
+        if (authHeaders == null || authHeaders.isEmpty()) {
             return this.onError(exchange, "Authorization header is missing", HttpStatus.UNAUTHORIZED);
         }
 
-        List<String> headers = request.getHeaders().get("Authorization");
-        String token = headers.get(0).replace(BEARER, "");
+        String token = authHeaders.get(0).replace(BEARER, "");
 
         // 2. Validate token
         if (!jwtTokenProvider.validateToken(token)) {
@@ -51,6 +57,24 @@ public class JwtValidationFilter extends AbstractGatewayFilterFactory<JwtValidat
 
         // 4. Continue the filter chain
         return chain.filter(exchange);
+    }
+
+    // Helper method to check if path is public
+    private boolean isPublicPath(String path, String method) {
+        // Public paths that don't require authentication
+        if (path.startsWith("/api/users/auth/")) {
+            return true; // Login endpoint
+        }
+        if (path.equals("/api/users") && "POST".equalsIgnoreCase(method)) {
+            return true; // Registration endpoint (POST only)
+        }
+        if (path.startsWith("/actuator/")) {
+            return true; // Health checks
+        }
+        if (path.startsWith("/eureka/")) {
+            return true; // Eureka endpoints
+        }
+        return false;
     }
 
     private Mono<Void> onError(ServerWebExchange exchange, String err, HttpStatus httpStatus) {
