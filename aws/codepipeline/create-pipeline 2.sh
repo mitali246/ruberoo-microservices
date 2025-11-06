@@ -38,7 +38,7 @@ cat > "$TEMP_JSON" <<EOF
             "actionTypeId": {
               "category": "Source",
               "owner": "AWS",
-              "provider": "S3",
+              "provider": "CodeStarSourceConnection",
               "version": "1"
             },
             "outputArtifacts": [
@@ -47,8 +47,9 @@ cat > "$TEMP_JSON" <<EOF
               }
             ],
             "configuration": {
-              "S3Bucket": "$S3_BUCKET",
-              "S3ObjectKey": "source/ruberoo-microservices.zip"
+              "ConnectionArn": "arn:aws:codestar-connections:us-east-1:008041186656:connection/placeholder",
+              "FullRepositoryId": "$GITHUB_OWNER/$GITHUB_REPO",
+              "BranchName": "$GITHUB_BRANCH"
             }
           }
         ]

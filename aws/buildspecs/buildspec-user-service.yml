@@ -21,9 +21,10 @@ phases:
   build:
     commands:
       - echo Build started on `date`
-      - cd $SERVICE_NAME
-      - mvn clean package -DskipTests
-      - cd ..
+      - echo Building Maven project for $SERVICE_NAME...
+      - mvn clean package -pl $SERVICE_NAME -am -DskipTests
+      - echo Maven build completed
+      - echo Building Docker image...
       - docker build -t $REPOSITORY_URI:latest -t $REPOSITORY_URI:$IMAGE_TAG -f $SERVICE_NAME/Dockerfile $SERVICE_NAME
       - docker tag $REPOSITORY_URI:latest $REPOSITORY_URI:$IMAGE_TAG
   post_build:

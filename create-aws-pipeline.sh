@@ -1,24 +1,27 @@
 #!/bin/bash
-# Script to create CodePipeline for Ruberoo microservices
+# Complete script to set up AWS CI/CD Pipeline with S3 source
 
 set -e
 
 PROFILE="ruberoo-deployment"
 REGION="us-east-1"
-GITHUB_OWNER="mitali246"
-GITHUB_REPO="ruberoo-microservices"
-GITHUB_BRANCH="main"
-# GITHUB_TOKEN - Set via environment variable or AWS Secrets Manager
-# Do not hardcode tokens in source code!
 S3_BUCKET="ruberoo-codepipeline-artifacts-008041186656"
 SERVICE_ROLE="arn:aws:iam::008041186656:role/ruberoo-codepipeline-service-role"
 
 echo "=========================================="
-echo "Creating CodePipeline"
+echo "🚀 AWS CI/CD Pipeline Setup (S3 Source)"
 echo "=========================================="
 echo ""
 
-# Create pipeline JSON
+# Step 1: Upload source to S3
+echo "📤 Step 1: Uploading source code to S3..."
+./upload-to-s3.sh
+
+echo ""
+echo "📋 Step 2: Creating CodePipeline..."
+echo ""
+
+# Step 2: Create CodePipeline
 TEMP_JSON=$(mktemp)
 cat > "$TEMP_JSON" <<EOF
 {
@@ -206,4 +209,11 @@ echo ""
 echo "=========================================="
 echo "✅ CodePipeline created successfully!"
 echo "=========================================="
+echo ""
+echo "🎯 Next Steps:"
+echo "1. Go to CodePipeline console to see your pipeline"
+echo "2. To update source code, run: ./upload-to-s3.sh"
+echo "3. Then release the pipeline manually or it will auto-run"
+echo ""
+
 

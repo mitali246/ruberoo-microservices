@@ -43,26 +43,52 @@ spec:
                   name: rds-secret
                   key: RDS_PASSWORD
             - name: JAVA_TOOL_OPTIONS
-              value: -Deureka.client.serviceUrl.defaultZone=http://eureka-server.ruberoo.svc.cluster.local:8761/eureka/
+              value: "-Deureka.client.serviceUrl.defaultZone=http://eureka-server.ruberoo.svc.cluster.local:8761/eureka/ -Dspring.config.import= -Dspring.cloud.config.enabled=false -Dspring.cloud.bootstrap.enabled=false"
             - name: SPRING_CLOUD_CONFIG_ENABLED
               value: "false"
             - name: SPRING_CLOUD_BOOTSTRAP_ENABLED
               value: "false"
+            - name: SPRING_CONFIG_IMPORT
+              value: ""
             - name: JWT_SECRET_KEY
               valueFrom:
                 secretKeyRef:
                   name: jwt-secret
                   key: secret-key
+          volumeMounts:
+            - name: user-bootstrap
+              mountPath: /config/bootstrap.properties
+              subPath: bootstrap.properties
           readinessProbe:
-            tcpSocket:
+            httpGet:
+              path: /actuator/health
               port: 8081
-            initialDelaySeconds: 10
-            periodSeconds: 5
-          livenessProbe:
-            tcpSocket:
-              port: 8081
-            initialDelaySeconds: 20
+            initialDelaySeconds: 120
             periodSeconds: 10
+            timeoutSeconds: 5
+            failureThreshold: 5
+          livenessProbe:
+            httpGet:
+              path: /actuator/health
+              port: 8081
+            initialDelaySeconds: 180
+            periodSeconds: 20
+            timeoutSeconds: 5
+            failureThreshold: 3
+      volumes:
+        - name: user-bootstrap
+          configMap:
+            name: user-bootstrap-empty
+
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: user-bootstrap-empty
+  namespace: ruberoo
+data:
+  bootstrap.properties: |
+    # intentionally empty to override packaged bootstrap
 
 ---
 apiVersion: v1
