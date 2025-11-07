@@ -28,8 +28,10 @@ spec:
               value: "false"
             - name: SPRING_CLOUD_BOOTSTRAP_ENABLED
               value: "false"
-            - name: SPRING_REDIS_HOST
+            - name: SPRING_DATA_REDIS_HOST
               value: redis-cache
+            - name: SPRING_DATA_REDIS_PORT
+              value: "6379"
             - name: RUBEROO_JWT_SECRET_KEY
               value: "dev-secret-change-me"
             - name: SERVER_PORT

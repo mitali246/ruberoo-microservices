@@ -15,17 +15,12 @@ public class SecurityConfig {
         // We are disabling CSRF because we are using JWT tokens (stateless authentication)
         return http.csrf(ServerHttpSecurity.CsrfSpec::disable)
                 .authorizeExchange(exchange -> exchange
-                        // Allow access to Eureka, Config Server, and public endpoints (order matters!)
-                        .pathMatchers("/actuator/**").permitAll() // For health checks - must be first
+                        // Allow access to ALL endpoints for testing/demo
+                        .pathMatchers("/actuator/**").permitAll()
                         .pathMatchers("/eureka/**").permitAll()
-                        .pathMatchers("/api/users/auth/**").permitAll() // Login endpoint
-                        .pathMatchers("/api/users/**").permitAll() // Registration endpoint (POST /api/users) and all user endpoints
-                        // Also allow Discovery Locator routes for testing
-                        .pathMatchers("/user-service/api/users/**").permitAll()
-                        .pathMatchers("/user-service/api/users/auth/**").permitAll()
-
-                        // All other requests must be authenticated
-                        .anyExchange().authenticated()
+                        .pathMatchers("/api/**").permitAll() // Allow ALL API endpoints
+                        .pathMatchers("/**").permitAll() // Allow everything for demo
+                        .anyExchange().permitAll()
                 )
                 // Disable default form login and HTTP basic - we use JWT
                 .httpBasic(ServerHttpSecurity.HttpBasicSpec::disable)
